@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  release:
+    types: [created]
+
+permissions:
+    contents: write
+    packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.20
+        id: go
+
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Get dependencies
+        run: go mod download
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.59
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: ./...
+
+      - name: Build
+        run: go build -v -o go-web-app
+
+      - name: Test with the Go CLI
+        run: go test
+
+      - name: release linux/amd64
+        uses: wangyoucao577/go-release-action@v1
+        with:
+          github_token: ${{ secrets.TOKEN }}
+          goos: linux
+          goarch: amd64
