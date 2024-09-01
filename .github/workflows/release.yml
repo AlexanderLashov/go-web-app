@@ -55,6 +55,6 @@ jobs:
       - name: Send repository dispatch event
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.PAT }}
+          token: ${{ secrets.TOKEN }}
           repository: alexanderlashov/go-web-app2
           event-type: build-docker
