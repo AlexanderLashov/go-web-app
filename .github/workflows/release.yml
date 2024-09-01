@@ -47,3 +47,14 @@ jobs:
           github_token: ${{ secrets.TOKEN }}
           goos: linux
           goarch: amd64
+
+  dispatch:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository dispatch event
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT }}
+          repository: alexanderlashov/go-web-app2
+          event-type: build-docker
